@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'manage.apps.ManagementConfig',
-    'manage',
     'talk',
 ]
 
@@ -128,7 +127,7 @@ STATICFILES_DIRS = (
 
 # Redis
 REDIS_OPTIONS = {
-    'HOST': '192.168.100.5',
+    'HOST': '127.0.0.1',
     'PORT': 6379,
     'DB': 0
 }
