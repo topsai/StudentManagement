@@ -51,16 +51,16 @@ def obj_get_model(obj, *o):
         ret = obj.model.objects.order_by(*obj.ordering)
     else:
         ret = obj.model.objects.all()
-    paginator = Paginator(ret, 1)
-    page = request.GET.get('page')
-    try:
-        contacts = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        contacts = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        contacts = paginator.page(paginator.num_pages)
+    # paginator = Paginator(ret, 1)
+    # page = request.GET.get('page')
+    # try:
+    #     contacts = paginator.page(page)
+    # except PageNotAnInteger:
+    #     # If page is not an integer, deliver first page.
+    #     contacts = paginator.page(1)
+    # except EmptyPage:
+    #     # If page is out of range (e.g. 9999), deliver last page of results.
+    #     contacts = paginator.page(paginator.num_pages)
     return ret
 
 

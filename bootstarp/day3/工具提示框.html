@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>工具提示框</title>
+	<link rel="stylesheet" href="../css/bootstrap.css">
+	<script src="../js/jquery.js"></script>
+	<script src="../js/bootstrap.js"></script>
+	<style>
+	body {
+		padding: 200px;
+	}
+	</style>
+	<script>
+	$(function(){
+		$("a").tooltip();
+	});
+	</script>
+</head>
+<body>
+	<a href="#" title="<em>这是一个按钮</em>"
+		data-html="true"
+		data-toggle="tooltip"	
+		data-animation="true"
+		data-placement="bottom"
+		data-trigger="click"
+		data-delay="1000"
+	>按钮</a>	
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>模态框</title>
+	<link rel="stylesheet" href="../css/bootstrap.css">
+	<script src="../js/jquery.js"></script>
+	<script src="../js/bootstrap.js"></script>
+	<style>
+	body {
+		padding: 100px;
+	}
+	/*.modal {
+		display:block;
+	}
+*/	</style>
+</head>
+<body>
+	<h3>创建模态框</h3>
+	<button class="btn btn-primary" data-toggle="modal" data-target="#pop-window" data-backdrop="static">
+		弹出模态框
+	</button>
+
+	<div class="modal fade" id="pop-window">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal">
+						&times;
+					</button>	
+					<div class="modal-title">
+						模态框
+					</div>
+				</div>
+				<div class="modal-body">
+					模态框内容部分	
+					模态框内容部分	
+					模态框内容部分	
+					模态框内容部分	
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal">
+						关闭
+					</button>					
+					<button class="btn btn-primary">
+						确定 
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>	
+</body>
+</html>

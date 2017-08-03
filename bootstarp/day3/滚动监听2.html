@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>滚动监听</title>
+	<link rel="stylesheet" href="../css/bootstrap.css">
+	<script src="../js/jquery.js"></script>
+	<script src="../js/bootstrap.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row col-md-offset-3 col-md-6">
+			<div class="navbar navbar-default" id="tab1">
+				<div class="navbar-header">
+					<a href="#" class="navbar-brand">Web编程</a>
+				</div>
+				<ul class="nav navbar-nav">
+					<li><a href="#html">HTML</a></li>
+					<li><a href="#css">CSS</a></li>
+					<li class="dropdown">
+						<a href="#" data-toggle="dropdown">
+							javascript
+							<span class="caret"></span>
+						</a>	
+						<ul class="dropdown-menu">
+							<li><a href="#jquery">jQuery</a></li>
+							<li><a href="#extjs">Extjs</a></li>
+							<li><a href="#prototype">prototype js</a></li>
+						</ul>
+					</li>
+				</ul>	
+			</div>		
+		</div>
+
+		<div data-spy="scroll"  data-target="#tab1" data-offset="0" class="row col-md-offset-3 col-md-6" style="padding:0px 10px; height:200px; overflow:auto;">
+			<h4 id="html">HTML教程</h4>
+			<p>
+				超文本标记语言（第一版）——在1993年6月作为互联网工程工作小组（IETF）工作草案发布（并非标准）：
+				HTML 2.0——1995年11月作为RFC 1866发布，在RFC 2854于2000年6月发布之后被宣布已经过时
+				HTML 3.2——1997年1月14日，W3C推荐标准 html 5 html 5
+				HTML 4.0——1997年12月18日，W3C推荐标准
+				HTML 4.01（微小改进）——1999年12月24日，W3C推荐标准
+				HTML 5——2014年10月28日，W3C推荐标准[4]  （详见本处参考资料）
+			</p>
+			<h4 id="css">CSS层叠样式表</h4>
+			<p>
+				层叠样式表是一种用来表现HTML（标准通用标记语言的一个应用）或XML（标准通用标记语言的一个子集）等文件样式的计算机语言
+				层叠样式表是一种用来表现HTML（标准通用标记语言的一个应用）或XML（标准通用标记语言的一个子集）等文件样式的计算机语言
+				层叠样式表是一种用来表现HTML（标准通用标记语言的一个应用）或XML（标准通用标记语言的一个子集）等文件样式的计算机语言
+			</p>
+			
+			<h4 id="jquery">jQuery</h4>
+			<p>
+				JQuery是继prototype之后又一个优秀的Javascript库。它是轻量级的js库 ，它兼容CSS3，还兼容各种浏览器（IE 6.0+, FF 1.5+, Safari 2.0+, Opera 9.0+），jQuery2.0及后续版本将不再支持IE6/7/8浏览器
+			</p>
+			<h4 id="extjs">Ext js</h4>
+			<p>
+				自动生成行号，支持checkbox全选，动态选择显示哪些列，支持本地以及远程分页，可以对单元格按照自己的想法进行渲染，这些也算可以想到的功能
+				自动生成行号，支持checkbox全选，动态选择显示哪些列，支持本地以及远程分页，可以对单元格按照自己的想法进行渲染，这些也算可以想到的功能
+			</p>
+			<h4 id="prototype">prototype js</h4>
+			<p>
+				prototype.js 是Sam Stephenson写的一个非常优雅的javascript基础类库，对javascript做了大量的扩展，而且很好的支持Ajax，国内外有多个基于此类库实现的效果库
+				prototype.js 是Sam Stephenson写的一个非常优雅的javascript基础类库，对javascript做了大量的扩展，而且很好的支持Ajax，国内外有多个基于此类库实现的效果库
+			</p>
+
+		</div>		
+
+
+	</div>	
+</body>
+</html>

@@ -1,0 +1,5 @@
+bootstrap: twitter, facebook
+
+响应式: (media: 媒体查询)
+	网页的表现，根据浏览的设备而变化
+自适应:(rem)

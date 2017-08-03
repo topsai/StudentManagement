@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>列嵌套</title>
+	<link rel="stylesheet" href="./css/bootstrap.css">
+	<style>
+	[class *= col-] {
+		background: #ccc;
+		border: 1px solid #eee;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">.col-md-4</div>
+			<div class="col-md-8">
+				.col-md-8,我下面嵌套了栅格系统
+				<div class="row">
+					<div class="col-md-6">.col-md-6</div>
+					<div class="col-md-6">.col-md-6</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2">.col-md-2</div>
+			<div class="col-md-10">
+				.col-md-10,我下面嵌套了栅格系统
+				<div class="row">
+					<div class="col-md-6">.col-md-6</div>
+					<div class="col-md-6">.col-md-6</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</body>
+</html>
