@@ -45,12 +45,12 @@
                         <form role="form" href="/regist/" method="post">
                             {% csrf_token %}
                             <fieldset>
-                                {{ obj.u }}
+                                {{ obj.as_p }}
                                 <div class="form-group">
-                                    {{ obj.name }}
+{#                                    {{ obj.username }}#}
                                 </div>
                                 <div class="form-group">
-                                    {{ obj.pwd }}
+{#                                    {{ obj.password }}#}
                                 </div>
                                 <div class="checkbox">
                                     <label>

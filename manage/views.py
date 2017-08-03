@@ -1,6 +1,17 @@
-from django.shortcuts import render, HttpResponse, redirect, Http404
+from django.shortcuts import render, HttpResponse, redirect, Http404, reverse
 from manage import models
 from manage.forms import user as user_forms
+# from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as login_user, get_user_model
+from django.contrib.auth import logout as logout_user
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+from django.db.models import Count
+from django.core.serializers import serialize
+from django.db.models import Q
+
+User = get_user_model()
 
 
 def lg(func):  # 验证用户登录装饰器
@@ -10,132 +21,76 @@ def lg(func):  # 验证用户登录装饰器
             # print("no login")
             return redirect('/login/')
         else:
-            print(request.session['user_type'])
+            # print(request.session['user_type'])
             if request.session['user_type'] != 'Manage':
                 return redirect('/login/')
         return func(request, *args, **kwargs)
     return wrap
 
 
-@lg
+@login_required
+@permission_required('group.can_add', raise_exception=True)
 def manage(request):
-    data = {}
-    student_count = models.Student.objects.all().count()
-    teacher_count = models.Teacher.objects.all().count()
-    seller_count = models.Seller.objects.all().count()
-    manage_count = models.Manage.objects.all().count()
-    data['student'] = student_count
-    data['teacher'] = teacher_count
-    data['seller'] = seller_count
-    data['manage'] = manage_count
-    print(data)
-    return render(request, 'pages/manage.html', data)
-
-# class Login:
-#     @staticmethod
-#     def student():
-#         print('login student')
-#
-#     @staticmethod
-#     def teacher():
-#         print('login teacher')
-#
-#     @staticmethod
-#     def seller():
-#         print('login seller')
-#
-#     @staticmethod
-#     def admin():
-#         print('login admin')
+    data = models.User.objects.values_list('user_type__name').annotate(count=Count('user_type'))
+    # data['student'] = student_count
+    # data['teacher'] = teacher_count
+    # data['seller'] = seller_count
+    # data['manage'] = manage_count
+    print(dict(list(data)))
+    return render(request, 'pages/manage.html', {'data': dict(list(data))})
 
 
 def index(request):
-    return render(request, 'pages/index.html')
+    return redirect('/{}/'.format(request.user.user_type.path))
 
 
 def login(request):
-    # if request.method == 'GET':
-    #     obj = model_form.LoginMF()
-    #     return render(request, 'login.html', {'obj': obj})
-    # elif request.method == 'POST':
-    #     obj = model_form.LoginMF(request.POST)
-    #     if obj.is_valid():
-    #         data = models.UserInfo.objects.filter(**obj.cleaned_data).first()
-    #         if data:
-    #             print(data.name, data.user_type)
-    #             request.session['name'] = data.name
-    #             request.session['id'] = data.id
-    #             request.session['user_type'] = data.user_type
-    #             return redirect('/index/')
-    #         else:
-    #             print('err')
-    #     else:
-    #         print(obj.errors)
-    #     return render(request, 'login.html', {'obj': obj, 'status': '用户名或密码错误'})
-    # try:
-    #     a = getattr(Login, w)
-    # except:
-    #     pass
     if request.method == 'GET':
-        u = request.GET.get('u')
+        form = AuthenticationForm()
 
-        if u == 'Student':
-            p = '学生'
-        elif u == 'Teacher':
-            p = '老师'
-        elif u == 'Seller':
-            p = '销售'
-        elif u == 'Manage':
-            p = '管理员'
-        else:
-            u = 'Student'
-            p = '学生'
-        obj = user_forms.login_form({'u': u})
-        return render(request, 'pages/login.html', {'obj': obj, 'p': p})
     elif request.method == 'POST':
-        obj = user_forms.login_form(request.POST)
-        if obj.is_valid():
-            u = obj.cleaned_data.pop('u')
-            try:
-                data = getattr(models, u).objects.filter(**obj.cleaned_data).first()
-                # print(obj.cleaned_data, data, getattr(models, u))
-                if data:
-                    print(data.name)
-                    request.session['name'] = data.name
-                    request.session['id'] = data.id
-                    request.session['user_type'] = u
-                    return redirect('/{}/'.format(u))
-                else:
-                    return render(request, 'pages/login.html', {'obj': obj, 'status': '用户名或密码错误'})
-            except:
-                return HttpResponse('err')
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            login_user(request, form.get_user())
+            # print(form.get_user(), type(form.get_user()))
+            return redirect('/{}/'.format(form.get_user().user_type.path))
+            # return redirect(reverse('user_list'))
         else:
-            data = obj.errors
-            print('errors', data)
+            print(form.errors)
+    else:
+        return Http404
+    return render(request, 'pages/login.html', {'obj': form})
+
 
 
 def regist(request):
-    if request.method == 'GET':
-        mf = user_forms.regist_form()
-        return render(request, 'pages/regist.html', {'obj': mf})
-    elif request.method == 'POST':
-        mf = user_forms.regist_form(request.POST)
-        if mf.is_valid():
-            print(mf.cleaned_data)
-            models.Student.objects.create(**mf.cleaned_data)
-            obj = user_forms.login_form({'u': 'Student'})
-            return render(request, 'pages/login.html', {'obj': obj, 'p': '学生', 'status': '注册成功,请登录。'})
+    form = user_forms.MyUserCreationForm()
+    if request.method == 'POST':
+        form = user_forms.MyUserCreationForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('log_in'))
         else:
-            print(mf.errors)
-            return render(request, 'pages/regist.html', {'obj': mf})
+            print(form.errors)
+    return render(request, 'pages/regist.html', {'obj': form})
+
+
+@login_required
+def talk(request):
+    data = models.Talk.objects.filter(
+        Q(send=request.user, receive_id=request.GET.get('id')) | Q(send=request.GET.get('id'), receive_id=request.user)
+    ).order_by('time')
+    return render(request, 'index.html', {'data': data})
 
 
 def students(request):
     print('students ')
-    obj = models.Student.objects.all()
+    obj = models.User.objects.filter(user_type=1).all()
     return render(request, 'pages/tables.html', {'obj': obj})
 
 
 def logout(request):
-    request.session.clear()
-    return redirect('/')
+    logout_user(request)
+    return redirect('/login/')
+
+

@@ -25,12 +25,15 @@ SECRET_KEY = 'v(+8_6!xka_ry0=n5i=*p#qudr^!j20d_yw_6os2=t$a9p7h88'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+# 这个MyUser就是models定义的那个类
+AUTH_USER_MODEL = "manage.UserInfo"
 
 # Application definition
 
 INSTALLED_APPS = [
+    # 'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,17 +41,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'manage.apps.ManagementConfig',
-    'talk',
+    # 'channels',
+    'StudentManagement',
+    'myadmin'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'StudentManagement.urls'
@@ -106,10 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-Hans'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 USE_I18N = True
 
 USE_L10N = True
@@ -141,6 +148,9 @@ CHANNEL_LAYERS = {
             "hosts": ['redis://{}:{}'.format(REDIS_OPTIONS['HOST'],
                                              REDIS_OPTIONS['PORT'])]
         },
-        "ROUTING": "talk.routing.channel_routing"
+        "ROUTING": "StudentManagement.routing.routing"
     }
 }
+
+# LOGIN_URL = '/login/'
+

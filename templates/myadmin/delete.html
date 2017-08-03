@@ -1,0 +1,33 @@
+{% extends 'myadmin/base.html' %}
+{% load my_tags %}
+{% block center %}
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
+            {#            <p>{% get_name_or_verbose_name obj %}: 1</p>#}
+            {% display_obj_related obj %}
+        </div>
+    </div>
+
+    <div class="row">
+        确定要删除么？
+        <button onclick="delete_obj()">确定</button>
+        <button>取消</button>
+    </div>
+
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        function delete_obj() {
+            $.ajax({
+                type: "DELETE",
+                headers: {'x-CSRFtoken': $.cookie('csrftoken')},
+                success: function (data) {
+                    window.location.href = data;
+                }
+            });
+        }
+    </script>
+{% endblock %}

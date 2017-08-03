@@ -1,0 +1,15 @@
+{% extends 'b.html' %}
+
+{% block content %}
+  <form action="{% url 'talk:sign_up' %}" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        {{ field.label_tag }}
+        {{ field }}
+      </div>
+    {% endfor %}
+    <button type="submit">Sign up</button>
+    <p>Already have an account? <a href="{% url 'talk:log_in' %}">Log in!</a></p>
+  </form>
+{% endblock content %}

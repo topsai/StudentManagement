@@ -1,0 +1,77 @@
+{% extends 'myadmin/base.html' %}
+{% load my_tags %}
+{% block center %}
+    <form method="post" id="action_form">
+        {% csrf_token %}
+    <!--obj_get_model -->
+        {% obj_get_model obj o as data %}
+    <!--end obj_get_model -->
+        <div class="row">
+            <div class="col-md-2 col-sm-4 col-xs-6">
+                <select name="action" class="form-control ">
+                    <option value="">----</option>
+                    {% get_action obj %}
+                </select>
+            </div>
+            <button type="submit" class="btn">执行</button>
+            <a href="add/">
+                <button type="button" class="btn btn-success pull-right">+ Add</button>
+            </a>
+        </div>
+
+        <table class="table table-hover" style="margin-top: 50px">
+            <thead>
+            <tr class="info">
+                <td><input id="check_all" type="checkbox"></td>
+                {% for i in obj.list_display %}
+                    <th>{{ i }}</th>
+                {% endfor %}
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in data %}
+                <tr>
+                    <td>
+                        <label><input name="selected_action" value="{{ i.id }}" class="checkbox" id="{{ i.id }}"
+                                      type="checkbox"/></label>
+                    </td>
+                    {% for item in obj.list_display %}
+                        <td><a href="{{ i.id }}/change/">{% obj_getattr i item %}</a></td>
+                    {% endfor %}
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
+{% endblock %}
+{% block script %}
+    <script>
+        $("#check_all").click(function () {
+            if ($(this).prop('checked')) {
+                $(':checkbox').prop('checked', true);
+            } else {
+                $(':checkbox').attr('checked', false)
+            }
+
+        });
+
+        function go() {
+            var check_list = [];
+            $(".checkbox:checked").each(function () {
+                check_list.push($(this).prop('id'))
+            });
+            if (check_list.length == 0) {
+                console.log('请选择id');
+                return
+            }
+            if ($(":selected").attr('func')) {
+                $("#action_form").submit()
+            } else {
+                console.log('请选择action');
+                return
+            }
+        }
+    </script>
+{% endblock %}

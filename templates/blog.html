@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Log</title>
+
+    <style>
+        body {
+            font-family: Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Source Han Sans CN",Roboto,"Microsoft Yahei",sans-serif;
+        }
+
+        #container {
+            margin: 1em;
+        }
+
+        #container h2 {
+            border-left: 0.25em solid red;
+            padding-left: 0.5em;
+        }
+
+        ul#log {
+            list-style-type: none;
+            -webkit-padding-start: 0;
+        }
+
+        ul#log li {
+            border-bottom: 0.1em dashed;
+        }
+
+        ul#log li p {
+            color: #999;
+            font-size: 0.8em;
+        }
+
+        ul#log li p span {
+            float: right;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <h2>Live Blog</h2>
+        <ul id="log">
+
+        </ul>
+    </div>
+    <div id="talk" user="{{ request.session.id }}">
+        <div style="width: 400px; height: 200px; border: 1px solid #777777">
+
+        </div>
+
+        <input type="text">
+        <button>发送</button>
+    </div>
+    <script src="/static/jquery.min.js"></script>
+    <script src="/static/jquery.cookie.js"></script>
+    <script type="application/javascript">
+        function info(ws) {
+            var user = $('#talk').attr('user');
+            var d = {'user': user,'ws': ws};
+            console.log(d);
+            $.ajax({
+                url:"/blog/websocket/",
+                type:"POST",
+                headers:{'x-CSRFtoken': $.cookie('csrftoken')},
+                data: d,
+                success:function (data, a1, a2) {
+                    console.log(data)
+                    }
+            })
+        }
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        var ws = new WebSocket(ws_scheme + '://' + window.location.host + window.location.pathname);
+        ws.onmessage = function (message) {
+{#            var data = JSON.parse(message);#}
+{# {'accept', 'text', 'bytes', 'close'}#}
+            var logList = document.querySelector('#log');
+            var logItem = document.createElement('li');
+
+{#            var itemTmp = `#}
+{#                <h3>${data.title}</h3>#}
+{#                <p>#}
+{#                    <date>${new Date(data.published).toLocaleString()}</date>#}
+{#                    <span>${data.source.title}</span>#}
+{#                </p>#}
+{#            `;#}
+            var itemTmp =`<h3>${message.data}</h3>`;
+            logItem.innerHTML = itemTmp;
+            logList.insertBefore(logItem, logList.firstChild);
+        }
+
+    </script>
+</body>
+</html>

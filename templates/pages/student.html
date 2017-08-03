@@ -246,7 +246,7 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> {{ request.session.name }}</a>
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> {{ request.user.username }}</a>
                         </li>
 {#                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>#}
 {#                        </li>#}
@@ -315,6 +315,20 @@
                 </div>
                 <!-- /.col-lg-4 -->
             </div>
+            <div class="row">
+                在线咨询
+                <ul>
+                    {% for user in users %}
+                      <!-- NOTE: We escape HTML to prevent XSS attacks. -->
+                      <a href="/talk/?id={{ user.id }}">
+                         <li data-username="{{ user.username|escape }}">
+                            {{ user.username|escape }}: {{ user.status|default:'Offline' }}
+                        </li>
+                      </a>
+                    {% endfor %}
+                  </ul>
+
+            </div>
             <!-- /.row -->
         </div>
     </div>
@@ -330,6 +344,34 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="/static/sb-admin/dist/js/sb-admin-2.js"></script>
+
+  <script>
+    var socket = new WebSocket('ws://' + window.location.host + '/users/');
+
+    socket.onopen = function open() {
+      console.log('WebSockets connection created.');
+    };
+
+    socket.onmessage = function message(event) {
+      var data = JSON.parse(event.data);
+      // NOTE: We escape JavaScript to prevent XSS attacks.
+      var username = encodeURI(data['username']);
+      var user = $('li').filter(function () {
+        return $(this).data('username') == username;
+      });
+
+      if (data['is_logged_in']) {
+        user.html(username + ': Online');
+      }
+      else {
+        user.html(username + ': Offline');
+      }
+    };
+
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.onopen();
+    }
+  </script>
 
 </body>
 

@@ -22,18 +22,18 @@
                                         <th>ID</th>
                                         <th>账号</th>
                                         <th>密码</th>
-                                        <th>状态</th>
-                                        <th>CSS grade</th>
+                                        <th>邮箱</th>
+                                        <th>上次登陆</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 {%  for i in obj %}
                                     <tr class="odd gradeX">
                                         <td>{{ i.id }}</td>
-                                        <td>{{ i.name }}</td>
-                                        <td>{{ i.pwd }}</td>
-                                        <td class="center">{{ i.status }}</td>
-                                        <td class="center">X</td>
+                                        <td>{{ i.username }}</td>
+                                        <td>{{ i.password }}</td>
+                                        <td class="center">{{ i.email }}</td>
+                                        <td class="center">{{ i.last_login }}</td>
                                     </tr>
                                 {% endfor %}
 {#                                    <tr class="even gradeC">#}

@@ -15,14 +15,25 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+
 from manage import views
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^Manage/', include('manage.urls')),
-    url(r'^Teacher/', include('teacher.urls')),
-    url(r'^Seller/', include('seller.urls')),
-    url(r'^Student/', include('student.urls')),
-    url(r'^$', views.index),
-    url(r'^login/$', views.login),
+    url(r'^manage/', include('myadmin.urls')),
+    url(r'^teacher/', include('teacher.urls')),
+    url(r'^seller/', include('seller.urls')),
+    # url(r'^student/$', include('student.urls'), ),
+    # url(r'^$', views.index),
+    # url(r'^login/', views.login, name='log_in'),
+    # url(r'^regist/', views.regist, name='sign_up'),
+    # url(r'^talk/', views.talk, name='talksb'),
+    # url(r'^$', include('talk.urls')),
+    url(r'^my/', include('myadmin.urls')),
+    # url(r'^', include('myadmin.urls')),
+    # url(r'blog/$', livelog, name='livelog'),
+    # url(r'blog/websocket/$', ws),
+    # url('^', include('django.contrib.auth.urls'))
+    # url(r'^accounts/login/$', auth_views.login, {'template_name': 'myapp/login.html'}),
 ]

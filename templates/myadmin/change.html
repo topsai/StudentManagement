@@ -1,0 +1,41 @@
+{% extends 'myadmin/base.html' %}
+{% load my_tags %}
+{% block center %}
+
+    <div class="row">
+{#        <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">#}
+        <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
+            <form method="post">
+                {% csrf_token %}
+
+                {% for i in obj %}
+
+                    {% if i.field.type == 'checkbox' %}
+                        <div class="checkbox">
+                            <label for="{{ i.id_for_label }}">
+                                {{ i.as_widget }}{{ i.label }}
+                            </label>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label for="{{ i.id_for_label }}">
+                                {{ i.label }}
+                                {{ i.as_widget }}
+{#                                {{ i.help_text }}#}
+                            </label>
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+                <button type="button" class="btn btn-danger"><a href="delete/">删除</a></button>
+                <button type="submit" class="btn btn-info pull-right">保存</button>
+            </form>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+
+

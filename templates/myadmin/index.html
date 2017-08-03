@@ -1,0 +1,36 @@
+{% extends 'myadmin/base.html' %}
+{% load my_tags %}
+{% block center %}
+    <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+            {% for i in  user.auths.menu.all %}
+                <li><a href="{% url i.url_name %}">{{ i.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+        <h2 class="sub-header">Section title</h2>
+        <div class="table-responsive">
+            {% for apps, appmodel in obj.items %}
+                <table class="table table-hover">
+                    <thead >
+                    <tr class="info">
+                        <th><strong><a href="{% url 'app_obj' apps %}">{{ apps }}</a></strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for k,v in appmodel.items %}
+                        <tr>
+                            <td><strong><a href="{% url 'table_obj' apps  k %}">{% get_name_or_verbose_name v %}</a></strong></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                </div>
+            {% endfor %}
+    </div>
+    </div>
+{% endblock %}
