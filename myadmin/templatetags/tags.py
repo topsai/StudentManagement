@@ -1,35 +1,22 @@
 #!/usr/bin/env python 
-# -*- coding: utf-8 -*- 
-
-
+# -*- coding: utf-8 -*-
 from django import template
 from django.utils.safestring import mark_safe
 from django.forms import widgets
-from myadmin import models
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 register = template.Library()
 
 
 @register.simple_tag
 def get_action(obj):
-    # print('obj', dir(obj))
+    # 获取action
     tags = []
     actions = obj.get_action()
     for action_name, action in actions.items():
         tag = """<option value = "{}"> {} </option>""". \
             format(action_name, action.short_description if hasattr(action, 'short_description') else action_name)
-        tags.append(tag)
+        # 格式化默认action的short_description
+        tags.append(tag.format(default_short_description=obj.model._meta.verbose_name_plural))
     return mark_safe('\n'.join(tags))
-
-
-# def get_action(option, obj):
-#     try:
-#         func = getattr(obj, option)
-#         return getattr(func, 'short_description')
-#     except:
-#         pass
-#         # print(option, obj, func, getattr(func, 'short_description'))
 
 
 @register.simple_tag
@@ -40,28 +27,6 @@ def dir_obj(obj):
 @register.simple_tag
 def check_checkbox(obj):
     return isinstance(obj.widget, widgets.CheckboxInput)
-
-
-@register.simple_tag
-def obj_get_model(obj, *o):
-    print(o)
-    if obj.ordering:
-        print(obj.ordering)
-        # models.Menu.objects.all().order_by()
-        ret = obj.model.objects.order_by(*obj.ordering)
-    else:
-        ret = obj.model.objects.all()
-    # paginator = Paginator(ret, 1)
-    # page = request.GET.get('page')
-    # try:
-    #     contacts = paginator.page(page)
-    # except PageNotAnInteger:
-    #     # If page is not an integer, deliver first page.
-    #     contacts = paginator.page(1)
-    # except EmptyPage:
-    #     # If page is out of range (e.g. 9999), deliver last page of results.
-    #     contacts = paginator.page(paginator.num_pages)
-    return ret
 
 
 @register.simple_tag
@@ -83,7 +48,7 @@ def recursive_related_objs_lookup(objs):
         ul_ele += li_ele
 
         # for local many to many
-        ##print("------- obj._meta.local_many_to_many", obj._meta.local_many_to_many)
+        # print("------- obj._meta.local_many_to_many", obj._meta.local_many_to_many)
         for m2m_field in obj._meta.local_many_to_many:  # 把所有跟这个对象直接关联的m2m字段取出来了
             sub_ul_ele = "<ul>"
             m2m_field_obj = getattr(obj, m2m_field.name)  # getattr(customer, 'tags')
@@ -124,7 +89,7 @@ def recursive_related_objs_lookup(objs):
                     target_objs = [accessor_obj]
                 # print("target_objs",target_objs)
                 if len(target_objs) > 0:
-                    ##print("\033[31;1mdeeper layer lookup -------\033[0m")
+                    # print("\033[31;1mdeeper layer lookup -------\033[0m")
                     # nodes = recursive_related_objs_lookup(target_objs,model_name)
                     nodes = recursive_related_objs_lookup(target_objs)
                     ul_ele += nodes

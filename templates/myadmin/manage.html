@@ -1,11 +1,9 @@
 {% extends 'myadmin/base.html' %}
-{% load my_tags %}
+{% load tags %}
 {% block center %}
     <form method="post" id="action_form">
         {% csrf_token %}
-    <!--obj_get_model -->
-        {% obj_get_model obj o as data %}
-    <!--end obj_get_model -->
+        <!--action-->
         <div class="row">
             <div class="col-md-2 col-sm-4 col-xs-6">
                 <select name="action" class="form-control ">
@@ -18,7 +16,7 @@
                 <button type="button" class="btn btn-success pull-right">+ Add</button>
             </a>
         </div>
-
+        <!--action-->
         <table class="table table-hover" style="margin-top: 50px">
             <thead>
             <tr class="info">
@@ -26,11 +24,10 @@
                 {% for i in obj.list_display %}
                     <th>{{ i }}</th>
                 {% endfor %}
-
             </tr>
             </thead>
             <tbody>
-            {% for i in data %}
+            {% for i in contacts %}
                 <tr>
                     <td>
                         <label><input name="selected_action" value="{{ i.id }}" class="checkbox" id="{{ i.id }}"
@@ -44,6 +41,27 @@
             {% endfor %}
             </tbody>
         </table>
+        <!--分页-->
+        <div class="pagination">
+            <span class="step-links">
+                {% if contacts.has_previous %}
+                    <a href="?page={{ contacts.previous_page_number }}">上一页</a>
+                {% endif %}
+
+                <span class="current">
+                    第{{ contacts.number }}页
+                </span>
+
+                {% if contacts.has_next %}
+                    <a href="?page={{ contacts.next_page_number }}">下一页</a>
+                {% endif %}
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span>共：{{ contacts.paginator.num_pages }}页.</span>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span>{{ contacts.paginator.count }}条</span>
+            </span>
+        </div>
+        <!--分页-->
     </form>
 {% endblock %}
 {% block script %}

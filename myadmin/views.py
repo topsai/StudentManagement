@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, reverse, redirect
 from myadmin import myadm
-from myadmin.myadm import create_modelforms
+from myadmin.create_modelform import create_modelforms
 from myadmin import models
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -14,31 +14,19 @@ def index(request):
 
 
 def table_obj(request, app_name, table_name):
-    print(request.method)
-    print('-----------')
-    print(request.GET)
-    print(request.POST)
-    print('-----------')
     # 表管理
-    o = None
     obj = myadm.registry[app_name][table_name]
-    # 处理action
-    if request.method == "GET":
-
-        o = request.GET.get('o')
-        # Model 中的排序
-        if obj.ordering:
-            ret = obj.model.objects.order_by(*obj.ordering)
-        else:
-            ret = obj.model.objects.all()
-
+    # 处理前端提交的action
     if request.method == "POST":
         action = request.POST.get('action')
         selected_action = request.POST.getlist('selected_action')
+        # 判断用户选择状态
         if all([action, selected_action]):
             act = obj.get_action().get(action)
+            # 防止用户篡改前端
             if act:
                 queryset = obj.model.objects.filter(id__in=selected_action)
+                # 执行action
                 act(obj, request, queryset)
             else:
                 messages.error(request, "action not find")
@@ -47,7 +35,31 @@ def table_obj(request, app_name, table_name):
                 messages.error(request, "action not selected")
             if not selected_action:
                 messages.error(request, "{} not selected".format(obj.model._meta.verbose_name_plural))
-    return render(request, 'myadmin/manage.html', {'obj': myadm.registry[app_name][table_name], 'o': o})
+
+    # 前端的排序
+    o = request.GET.get('o')
+    if o:
+        data = obj.model.objects.order_by(o)
+    else:
+        # Model 中的排序
+        if obj.ordering:
+            data = obj.model.objects.order_by(*obj.ordering)
+        else:
+            data = obj.model.objects.all()
+    # 分页
+    paginator = Paginator(data, 1)
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+
+    return render(request, 'myadmin/manage.html',
+                  {'obj': myadm.registry[app_name][table_name], 'o': o, 'data': data, 'contacts': contacts})
 
 
 def table_obj_add(request, app_name, table_name):
