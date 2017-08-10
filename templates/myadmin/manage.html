@@ -21,9 +21,11 @@
             <thead>
             <tr class="info">
                 <td><input id="check_all" type="checkbox"></td>
-                {% for i in obj.list_display %}
+
+                {% for i in obj.get_list_display %}
                     <th>{{ i }}</th>
                 {% endfor %}
+
             </tr>
             </thead>
             <tbody>
@@ -33,9 +35,11 @@
                         <label><input name="selected_action" value="{{ i.id }}" class="checkbox" id="{{ i.id }}"
                                       type="checkbox"/></label>
                     </td>
-                    {% for item in obj.list_display %}
+
+                    {% for item in obj.get_list_display %}
                         <td><a href="{{ i.id }}/change/">{% obj_getattr i item %}</a></td>
                     {% endfor %}
+
 
                 </tr>
             {% endfor %}

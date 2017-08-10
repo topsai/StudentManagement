@@ -1,9 +1,14 @@
 {% extends 'myadmin/base.html' %}
 {% load tags %}
 {% block center %}
+    <style>
+    .errorlist{
+        color: red;
+    }
+    </style>
     <form method="post">
         {% csrf_token %}
-        {{ obj }}
+        {{ obj.as_p }}
         <button type="submit" class="btn btn-info">确定</button>
     </form>
 {% endblock %}

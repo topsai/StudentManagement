@@ -4,6 +4,9 @@ from myadmin.create_modelform import create_modelforms
 from myadmin import models
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import UserManager
+
 
 
 # Create your views here.
@@ -13,7 +16,7 @@ def index(request):
     return render(request, 'myadmin/index.html', {'obj': myadm.registry})
 
 
-def table_obj(request, app_name, table_name):
+def table_obj_list(request, app_name, table_name):
     # 表管理
     obj = myadm.registry[app_name][table_name]
     # 处理前端提交的action
@@ -47,7 +50,7 @@ def table_obj(request, app_name, table_name):
         else:
             data = obj.model.objects.all()
     # 分页
-    paginator = Paginator(data, 1)
+    paginator = Paginator(data, 8)
     page = request.GET.get('page')
     try:
         contacts = paginator.page(page)
@@ -64,22 +67,39 @@ def table_obj(request, app_name, table_name):
 
 def table_obj_add(request, app_name, table_name):
     obj = myadm.registry[app_name][table_name]
-    mf = create_modelforms(request, obj)
+    # 添加了get_modelform方法
+    mf = obj.get_modelform("add")  # get_modelform
+    print('modelform:', mf)
+    # 处理post
     if request.method == "POST":
-        mf_obj = mf(request.POST)
-        if mf_obj.is_valid():
-            mf_obj.save()
+        # 将注册方法单独进行处理
+        mf = mf(request.POST)
+        if mf.is_valid():
+            # Here is the registration.
+            if obj.model._meta.label == request.user._meta.model._meta.label:
+                print('开始注册了')
+                pwd = mf.clean_password2()
+                u = obj.model.objects.create_user(username=request.POST.get('username'), password=pwd)
+            else:
+                mf.save()
             messages.info(request, "添加{}成功。".format(obj.model._meta.verbose_name_plural))
-        return redirect(reverse('table_obj', args=[app_name, table_name]))
-    mf_obj = mf()
-    return render(request, 'myadmin/add.html', {'obj': mf_obj})
+            return redirect(reverse('table_obj', args=[app_name, table_name]))
+        else:
+            return render(request, 'myadmin/add.html', {'obj': mf,})
+    return render(request, 'myadmin/add.html', {'obj': mf})
 
 
 def table_obj_change(request, app_name, table_name, id):
     # 更改
     obj = myadm.registry[app_name][table_name]
-    mf = create_modelforms(request, obj)
+    mf = obj.get_modelform()
     data = mf(instance=obj.model.objects.get(id=id))
+    if request.method == 'POST':
+        data = mf(request.POST, instance=obj.model.objects.get(id=id))
+        if data.is_valid():
+            data.save()
+            messages.info(request, "修改{}成功。".format(obj.model._meta.verbose_name_plural))
+            return redirect(reverse('table_obj', args=[app_name, table_name]))
     return render(request, 'myadmin/change.html', {'obj': data})
 
 
@@ -97,3 +117,9 @@ def table_obj_change_delte(request, app_name, table_name, ids):
 
 def app_obj(request, app_name):
     return render(request, 'myadmin/app.html', )
+
+from django.contrib.auth.decorators import login_required
+@login_required
+def test(request):
+    obj = request.user.has_perm(request.user, 'prem')
+    return render(request, 'myadmin/permissions.html', {'obj': obj})

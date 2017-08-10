@@ -45,6 +45,7 @@ def index(request):
 
 
 def login(request):
+    print('login')
     if request.method == 'GET':
         form = AuthenticationForm()
 
@@ -53,8 +54,10 @@ def login(request):
         if form.is_valid():
             login_user(request, form.get_user())
             # print(form.get_user(), type(form.get_user()))
-            return redirect('/{}/'.format(form.get_user().user_type.path))
-            # return redirect(reverse('user_list'))
+            if '?next='in request.get_full_path():
+                return redirect('{}'.format(request.get_full_path().lstrip('/login/?next=')))
+            else:
+                return redirect('/my/')
         else:
             print(form.errors)
     else:

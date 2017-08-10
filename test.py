@@ -1,23 +1,17 @@
-#!/usr/bin/env python 
-# -*- coding: utf-8 -*- 
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
-# socket server
-import socket
-sk = socket.socket()
-sk.bind(('127.0.0.1', 8080))
-sk.listen(1)
-conn, addr = sk.accept()
-conn.send('Hello, welcome')
-conn.recv(1024)
-conn.close()
+loan = 131000
+interest_rate = 0.0057
+Monthly_interest = loan*interest_rate
+Repayment = 131000/12
+for i in range(12):
+    Balance = loan - Repayment*i
+    print(Monthly_interest/Balance*100)
 
 
-# socket client
-import socket
-cli = socket.socket()
-cli.connect(('127.0.0.1', 8080))
-cli.send('Hi')
-cli.recv(1024)
-cli.close()
 
+from pyfirmata import Arduino, util
+board = Arduino('/dev/tty.usbserial-A6008rIF')
+board.digital[13].write(1)

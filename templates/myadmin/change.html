@@ -19,6 +19,7 @@
                     {% else %}
                         <div class="form-group">
                             <label for="{{ i.id_for_label }}">
+                                <p style="color: red">{{ i.errors.0 }}</p>
                                 {{ i.label }}
                                 {{ i.as_widget }}
 {#                                {{ i.help_text }}#}

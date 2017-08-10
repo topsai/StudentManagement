@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^seller/', include('seller.urls')),
     # url(r'^student/$', include('student.urls'), ),
     # url(r'^$', views.index),
-    # url(r'^login/', views.login, name='log_in'),
+    url(r'^login/', views.login, name='log_in'),
     # url(r'^regist/', views.regist, name='sign_up'),
     # url(r'^talk/', views.talk, name='talksb'),
     # url(r'^$', include('talk.urls')),

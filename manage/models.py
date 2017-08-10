@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser, Group, BaseUserManager
 from django.conf import settings
+
 import myadmin
 # Create your models here.
 
@@ -17,12 +18,46 @@ class LoggedInUser(models.Model):
         settings.AUTH_USER_MODEL, related_name='logged_in_user')
 
 
+class UserManager(BaseUserManager):
+    def create_user(self, username, email=None, password=None):
+        # if not email:
+        #     raise ValueError('Users must have an email address')
+        if not username:
+            raise ValueError('Users must have an username')
+        user = self.model(
+            username=username,
+            email=UserManager.normalize_email(email),
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, name, email, password=None):
+        user = self.create_user(name, email, password)
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+
 class UserInfo(AbstractUser):
     # user_type = models.ForeignKey('UserType', default=1, verbose_name='用户类型')
     user_class = models.ManyToManyField('Class', verbose_name='班级', blank=True)
     phone = models.CharField(max_length=11, verbose_name='电话号码')
     qq = models.CharField(max_length=24, verbose_name='QQ号码')
     auths = models.ForeignKey(to='myadmin.Authority', verbose_name='权限', null=True, blank=True, related_name='auth')
+    objects = UserManager()
+
+    def get_all_permissions(self, user_obj, obj=None):
+        pass
+    # TODO 权限认证。。。待续
+    # def has_perm(self, user_obj, perm, obj=None):
+    #     if not user_obj.is_active:
+    #         return False
+    #     return perm in self.get_all_permissions(user_obj, obj)
+    def has_perm(self, user_obj, perm, obj=None):
+        print(user_obj)
+        print(perm)
+        return 666
 
 
 # class UserType(models.Model):

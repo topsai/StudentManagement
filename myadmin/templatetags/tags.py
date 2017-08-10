@@ -31,6 +31,8 @@ def check_checkbox(obj):
 
 @register.simple_tag
 def obj_getattr(obj, item):
+    print('obj:', obj)
+    print('item:', item)
     return getattr(obj, item)
 
 
