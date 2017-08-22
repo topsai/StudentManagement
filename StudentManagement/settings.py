@@ -40,9 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'manage.apps.ManagementConfig',
-    # 'channels',
+    'channels',
     'StudentManagement',
-    'myadmin'
+    'myadmin',
+    'talk'
 ]
 
 MIDDLEWARE = [

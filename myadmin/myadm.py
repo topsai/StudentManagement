@@ -10,6 +10,7 @@ from myadmin import models
 from django.contrib import messages
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.forms import UsernameField
+
 User = get_user_model()
 
 
@@ -48,13 +49,7 @@ class UserCreationForm(forms.ModelForm):
         widget=forms.PasswordInput,
         strip=False,
         help_text=_("Enter the same password as before, for verification. hhh"),
-        # help_text="Enter the same password as before, for verification. hhhh",
     )
-    # email = forms.EmailField(
-    #     label='email..',
-    #     widget=forms.EmailField,
-    #     help_text='请输入邮箱',
-    # )
 
     class Meta:
         model = get_user_model()
@@ -86,8 +81,39 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 
+class UserInfoModelForm(forms.ModelForm):
+    # is_rember = forms.fields.CharField(widget=forms.widgets.CheckboxInput)  # 自定义额外字段
+
+    class Meta:
+        model = User
+        fields = "__all__"  # 展示全部
+        # fields = ["username", "email", "user_type", ]  # 写谁展示谁
+        exclude = ["last_login", 'groups', 'user_permissions', 'date_joined']  # 排除哪一个
+        labels = {
+            "username": "用户名",
+        }  # 指定label显示名字优先级高于models的verbose_name
+        help_texts = {
+            "username": "请输入用户名",
+        }  # 帮助信息，没啥卵用
+        widgets = {
+            "username": widgets.TextInput(attrs={'class': 'form-control'}, ),
+            "password": widgets.TextInput(attrs={'class': 'form-control'}, ),
+            "permission": widgets.SelectMultiple(attrs={'class': 'form-control'}, ),
+            "permissiongroup": widgets.SelectMultiple(attrs={'class': 'form-control'}, ),
+        }  # 指定插件
+        error_messages = {
+            "__all__": {},  # 整体错误信息
+            "username": {
+                'required': "用户名不能为空",
+            }
+        }  # 指定错误信息
+        field_classes = {
+            'email': forms.fields.EmailField
+        }  # 定义字段的类
+
+
 class UserModel(Base):
-    form = None
+    form = UserInfoModelForm
     add_form = UserCreationForm
     # 显示的字段
     list_display = ['id', 'username', 'password', 'email', 'last_login', 'auths']
@@ -124,4 +150,5 @@ class UserModel(Base):
 register(models.Menu, MenuModel)
 register(models.Authority, AuthorityModel)
 register(User, UserModel)
-register(models.Permissions)
+register(models.Permission)
+register(models.PermissionGroup)

@@ -38,7 +38,6 @@ class Base(object):
                 self._list_display.append(i.attname)
             print(self._list_display)
 
-
     # 获取所有actions字典
     def get_action(self):
         # 初始化默认actions
@@ -79,7 +78,6 @@ def register(model, admin_class=None, **options):
 
 # 自定义认证后端
 class MyModelBackend(object):
-
     def get_all_permissions(self, user_obj, obj=None):
         pass
 
@@ -88,6 +86,6 @@ class MyModelBackend(object):
     #         return False
     #     return perm in self.get_all_permissions(user_obj, obj)
     def has_perm(self, user_obj, perm, obj=None):
-        print(user_obj)
-        print(perm)
-        return 666
+        # print(user_obj)
+        # print(perm)
+        return 6667

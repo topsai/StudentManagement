@@ -25,6 +25,16 @@ def lg(func):  # 验证用户登录装饰器
             if request.session['user_type'] != 'Manage':
                 return redirect('/login/')
         return func(request, *args, **kwargs)
+
+    return wrap
+
+
+def check_perm(func):  # 验证用户登录装饰器
+    def wrap(request, *args, **kwargs):
+        # 如果未登陆，跳转到指定页面
+        print('request:', request, '*args:', *args, '**kwargs:', **kwargs)
+        return func(request, *args, **kwargs)
+
     return wrap
 
 
@@ -36,7 +46,7 @@ def manage(request):
     # data['teacher'] = teacher_count
     # data['seller'] = seller_count
     # data['manage'] = manage_count
-    print(dict(list(data)))
+    # print(dict(list(data)))
     return render(request, 'pages/manage.html', {'data': dict(list(data))})
 
 
@@ -54,7 +64,7 @@ def login(request):
         if form.is_valid():
             login_user(request, form.get_user())
             # print(form.get_user(), type(form.get_user()))
-            if '?next='in request.get_full_path():
+            if '?next=' in request.get_full_path():
                 return redirect('{}'.format(request.get_full_path().lstrip('/login/?next=')))
             else:
                 return redirect('/my/')
@@ -63,7 +73,6 @@ def login(request):
     else:
         return Http404
     return render(request, 'pages/login.html', {'obj': form})
-
 
 
 def regist(request):
@@ -95,5 +104,3 @@ def students(request):
 def logout(request):
     logout_user(request)
     return redirect('/login/')
-
-

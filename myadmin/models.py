@@ -16,9 +16,6 @@ class Menu(models.Model):
         verbose_name = '菜单'
         permissions = (("干点啥", "权限描述"),)
 
-    def __str__(self):
-        return self.name
-
 
 class Authority(models.Model):
     name = models.CharField(max_length=32)
@@ -31,7 +28,8 @@ class Authority(models.Model):
         return self.name
 
 
-class Permissions(models.Model):
+class Permission(models.Model):
+    # 权限表
     choises = [(0, '绝对路径'), (1, '相对路径'), ]
     method_choises = [(0, 'GET'), (1, 'POST'), ]
     name = models.CharField(max_length=32, verbose_name='权限名称')  # 权限名称
@@ -46,3 +44,12 @@ class Permissions(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class PermissionGroup(models.Model):
+    name = models.CharField(max_length=32, verbose_name='组名')  # 权限名称
+    Permissions = models.ManyToManyField(to='Permission')
+
+    def __str__(self):
+        return self.name
+

@@ -3,6 +3,8 @@
 {% block content %}
   <a href="{% url 'talk:log_out' %}">Log out</a>
   <br>
+    {{ users }}
+    <p>--------------</p>
   <ul>
     {% for user in users %}
       <!-- NOTE: We escape HTML to prevent XSS attacks. -->

@@ -6,10 +6,21 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
-
+from django.core.urlresolvers import resolve
 
 
 # Create your views here.
+
+
+# 权限检查
+def check_perm(func):  # 验证用户登录装饰器
+    def wrap(request, *args, **kwargs):
+        request.user.has_perm(request, '')
+        # print('path', request.get_full_path())
+        # print('method', request.method)
+        return func(request, *args, **kwargs)
+
+    return wrap
 
 
 def index(request):
@@ -85,7 +96,7 @@ def table_obj_add(request, app_name, table_name):
             messages.info(request, "添加{}成功。".format(obj.model._meta.verbose_name_plural))
             return redirect(reverse('table_obj', args=[app_name, table_name]))
         else:
-            return render(request, 'myadmin/add.html', {'obj': mf,})
+            return render(request, 'myadmin/add.html', {'obj': mf, })
     return render(request, 'myadmin/add.html', {'obj': mf})
 
 
@@ -106,9 +117,7 @@ def table_obj_change(request, app_name, table_name, id):
 def table_obj_change_delte(request, app_name, table_name, ids):
     data = myadm.registry[app_name][table_name].model.objects.filter(id__in=ids)
     if request.method == "DELETE":
-        print('delete', data)
         ret = data.delete()
-        print(ret)
         messages.info(request, '删除成功')
         return HttpResponse(reverse('table_obj', args=[app_name, table_name]))
 
@@ -118,8 +127,26 @@ def table_obj_change_delte(request, app_name, table_name, ids):
 def app_obj(request, app_name):
     return render(request, 'myadmin/app.html', )
 
+
 from django.contrib.auth.decorators import login_required
+
+
+class Obj:
+    def __init__(self, obj):
+        self.__dict__.update(obj)
+
+
 @login_required
+# @check_perm
 def test(request):
-    obj = request.user.has_perm(request.user, 'prem')
+    # for i in dir(request):
+    #     print(i, ':', getattr(request, i))
+    # a = Obj(request.__dict__)
+    # print(a.__dict__)
+    # print(request.method)
+    # print(resolve(request.path))
+    # print(resolve(request.path).url_name)
+    obj = request.user.has_perm(request)
+    # obj = request.user.has_perm(request.user, 'prem')
+    # obj = request.user.permission.all()
     return render(request, 'myadmin/permissions.html', {'obj': obj})

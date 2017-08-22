@@ -6,7 +6,6 @@ from django.forms import widgets, fields
 from manage import models
 
 
-
 class UserInfoMF(forms.ModelForm):
     class Meta:
         model = models.Student
@@ -17,7 +16,6 @@ class LoginMF(forms.ModelForm):
     class Meta:
         model = models.Student
         fields = ['name', 'pwd']
-
 
 # class HostGroupMF(forms.ModelForm):
 #     hosts = forms.ModelMultipleChoiceField(queryset=models.HostInfo.objects.all())

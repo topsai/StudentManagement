@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser, Group, BaseUserManager
 from django.conf import settings
 
 import myadmin
+
+
 # Create your models here.
 
 
@@ -46,30 +48,36 @@ class UserInfo(AbstractUser):
     qq = models.CharField(max_length=24, verbose_name='QQ号码')
     auths = models.ForeignKey(to='myadmin.Authority', verbose_name='权限', null=True, blank=True, related_name='auth')
     objects = UserManager()
+    permission = models.ManyToManyField(to='myadmin.Permission', null=True, blank=True)
+    permissiongroup = models.ManyToManyField(to='myadmin.PermissionGroup', null=True, blank=True)
 
-    def get_all_permissions(self, user_obj, obj=None):
-        pass
-    # TODO 权限认证。。。待续
-    # def has_perm(self, user_obj, perm, obj=None):
-    #     if not user_obj.is_active:
-    #         return False
-    #     return perm in self.get_all_permissions(user_obj, obj)
-    def has_perm(self, user_obj, perm, obj=None):
-        print(user_obj)
-        print(perm)
-        return 666
+    def get_all_permissions(self, user_obj=None, obj=None):
+        # 获取所有权限集合
+        all_permissions = []
+        permission = self.permission.all()
+        if permission:
+            all_permissions.extend(permission)
+        permission_group = self.permissiongroup.all()
+        for i in permission_group:
+            for k in i.Permissions.all():
+                all_permissions.append(k)
+        return set(all_permissions)
 
-
-# class UserType(models.Model):
-#     name = models.CharField(max_length=32)
-#     path = models.CharField(max_length=32)
-#
-#     class Meta:
-#         # verbose_name加s
-#         verbose_name_plural = '用户类型'
-#
-#     def __str__(self):
-#         return self.name
+    def has_perm(self, request, perm=None, obj=None):
+        # 判断是否有权限访问当前地址
+        have_perm = False
+        all_permissions = self.get_all_permissions()
+        url = request.get_full_path()
+        method = request.method
+        for i in all_permissions:
+            if i.url_type == 0:
+                if i.url == url and i.get_method_display() == method:
+                    have_perm = True
+            else:
+                from django.core.urlresolvers import resolve
+                if i.url == resolve(request.path).url_name and i.get_method_display() == method:
+                    have_perm = True
+        return have_perm
 
 
 class Class(models.Model):

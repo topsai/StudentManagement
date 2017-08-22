@@ -9,6 +9,7 @@ from manage import models
 # Create your views here.
 
 User = get_user_model()
+seller = models.Seller.objects.all()
 def log_in(request):
     form = AuthenticationForm()
     if request.method == 'POST':
@@ -27,10 +28,10 @@ def log_out(request):
 
 
 def user_list(request):
-    users = User.objects.select_related('logged_in_user')
-    for user in users:
-        user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
-    return render(request, 'user_list.html', {'users': users})
+    # users = User.objects.select_related('logged_in_user')
+    # for user in users:
+    #     user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
+    return render(request, 'user_list.html', {'users': seller})
 
 from django.contrib.auth import get_user_model
 # User = get_user_model()

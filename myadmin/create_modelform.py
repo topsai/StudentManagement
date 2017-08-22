@@ -19,17 +19,19 @@ def create_modelforms(admin_class=None):
     _widgets = {}
 
     def __new__(cls, *args, **kwargs):
-        print('cls', cls)
-        print('cls base_fields', cls.base_fields.items())
+        # print('cls', cls)
+        # print('cls base_fields', cls.base_fields.items())
         for field_name, field_obj in cls.base_fields.items():
-            print(field_obj.widget)
-            # TODO 待续
+            # print(field_obj.widget)
             _widgets[field_name] = forms.EmailField
-            if isinstance(field_obj.widget, widgets.CheckboxInput):
+            if isinstance(field_obj.widget, widgets.Select):
+                # field增加一个参数，方便前端获取widget 类型
+                field_obj.type = 'checkbox'
+            elif isinstance(field_obj.widget, widgets.CheckboxInput):
                 # field增加一个参数，方便前端获取widget 类型
                 field_obj.type = 'checkbox'
             else:
-                field_obj.widget.attrs['class'] = 'form-control '
+                field_obj.widget.attrs['class'] = 'form-control'
         return forms.ModelForm.__new__(cls)
 
     class Meta:

@@ -9,7 +9,6 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext, ugettext_lazy as _
 # admin.site.register(models.User)
 
-models.UserInfo
 
 # admin.site.register(models.Student2Class)
 # admin.site.register(models.Class)

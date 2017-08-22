@@ -7,3 +7,4 @@ class TalkConfig(AppConfig):
 
     def ready(self):
         import talk.signal
+        print('talk apps')

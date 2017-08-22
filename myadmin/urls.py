@@ -8,7 +8,7 @@ urlpatterns = [
     url(r'^(\w+)/(\w+)/add/$', views.table_obj_add, name='table_obj_add'),
     url(r'^(\w+)/(\w+)/(\d+)/change/$', views.table_obj_change, name='table_obj_change'),
     url(r'^(\w+)/(\w+)/(\d+)/change/delete/$', views.table_obj_change_delte, name='table_obj_change_delete'),
-    url(r'^test/$', views.test, name='test'),
+    url(r'^test/$', views.test, name='test111'),
     url(r'^(\w+)/$', views.app_obj, name='app_obj'),
 
 ]
