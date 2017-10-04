@@ -51,7 +51,7 @@ def manage(request):
 
 
 def index(request):
-    return redirect('/{}/'.format(request.user.user_type.path))
+    return render(request, "manage/index.html")
 
 
 def login(request):
@@ -92,7 +92,7 @@ def talk(request):
     data = models.Talk.objects.filter(
         Q(send=request.user, receive_id=request.GET.get('id')) | Q(send=request.GET.get('id'), receive_id=request.user)
     ).order_by('time')
-    return render(request, 'index.html', {'data': data})
+    return render(request, 'index.html', {'data': data, 'cs': "小王"})
 
 
 def students(request):
@@ -103,4 +103,4 @@ def students(request):
 
 def logout(request):
     logout_user(request)
-    return redirect('/login/')
+    return redirect("/")

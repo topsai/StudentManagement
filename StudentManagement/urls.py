@@ -21,12 +21,13 @@ from manage import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^manage/', include('myadmin.urls')),
+    url(r'^manage/$', include('manage.urls')),
     url(r'^teacher/', include('teacher.urls')),
     url(r'^seller/', include('seller.urls')),
     url(r'^$', include('student.urls'), ),
     # url(r'^$', views.index),
     url(r'^login/', views.login, name='log_in'),
+    url(r'^logout/', views.logout, name='log_out'),
     # url(r'^regist/', views.regist, name='sign_up'),
     url(r'^talk/', views.talk, name='talksb'),
     # url(r'^$', include('talk.urls')),

@@ -181,3 +181,5 @@ class Talk(models.Model):
     content = models.CharField(max_length=1000)
     time = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=0)
+
+

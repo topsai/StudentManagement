@@ -11,6 +11,13 @@ from manage import models
 @channel_session_user_from_http
 def ws_connect(message):
     print('ws_connect')
+    if message.user.id:
+        print(message.user)
+        print(message.user.username)
+        print(message.user.id)
+    else:
+        print("no ligin")
+        message.reply_channel.send({'accept': True})
     Group('users').add(message.reply_channel)
     Group('users').send({
         'text': json.dumps({
@@ -18,7 +25,6 @@ def ws_connect(message):
             'is_logged_in': True
         })
     })
-
 
 @channel_session_user
 def ws_disconnect(message):
@@ -36,9 +42,12 @@ def ws_disconnect(message):
 def user_connect(message):
     print('user_connect')
     message.reply_channel.send({'accept': True})
-    print(message.user)
-    print(message.user.username)
-    print(message.user.id)
+    if message.user:
+        print(message.user)
+        print(message.user.username)
+        print(message.user.id)
+    else:
+        print("no ligin")
 
 
 
